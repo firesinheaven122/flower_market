@@ -8,7 +8,7 @@
 - Николенко Денис,
 - Вацурова Елизавета.
 
-
+Ссылка на отчёт: https://docs.google.com/document/d/1UMWGKg6kGMo7zi43GoU9Fhy1VUGqGvw3F8h7cN4ZiC8/edit?tab=t.0#heading=h.3334o2cpsck9
 
 Для разворачивания бэка:
 
