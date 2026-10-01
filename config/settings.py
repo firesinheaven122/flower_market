@@ -202,3 +202,4 @@ SIMPLE_JWT = {
 # Настройки для загружаемых медиа-файлов (изображения товаров и т.д.)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
