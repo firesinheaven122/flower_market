@@ -1,3 +1,4 @@
+#базовый файл настроек django проекта для работы с api, auth и медиа
 """
 Django settings for config project.
 
@@ -12,24 +13,17 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+#считаем корневую директорию проекта относительно текущего файла
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+#настройки для локальной разработки, не стоит использовать в продакшене
 SECRET_KEY = 'django-insecure-+a^q6=77tb+s^jtu7wj2-sr63knui4&t&uk061v0zu)vw9l7&l'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
+#список установленных приложений django и сторонних библиотек проекта
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,20 +32,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Сторонние библиотеки
+    #сторонние библиотеки для api и документации
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
 
-    # Ваши приложения
+    #локальные приложения проекта
     'users',
     'store',
     'cart',
     'orders',
 ]
 
+#подключаем middleware для cors, сессий, безопасности и auth
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,6 +58,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+#разрешаем cors для запросов с фронтенда
 CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
@@ -83,24 +79,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.1/ref/settings/#databases
-
+#настройки подключения к базе postgres для хранения данных проекта
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'flower_shop_db',       # Имя созданной БД в PostgreSQL
-        'USER': 'postgres',             # Имя пользователя PostgreSQL
-        'PASSWORD': 'Sch4911D04!',    # Ваш пароль
+        'NAME': 'flower_shop_db',
+        'USER': 'postgres',
+        'PASSWORD': 'Sch4911D04!',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
-
+#настройки проверки пароля для безопасности регистрации и входа
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -117,35 +109,28 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.1/topics/i18n/
-
+#языковые настройки проекта
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.1/howto/static-files/
-
+#настройки статических файлов для frontend и административной панели
 STATIC_URL = 'static/'
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
+#настройки отправки email в локальной разработке через консоль
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
 
+#подключаем кастомную модель пользователя из приложения users
 AUTH_USER_MODEL = 'users.User'
 
+#настройки rest framework и jwt для api авторизации
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -153,17 +138,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
-    # Подключаем генератор схемы OpenAPI
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# Красивая настройка Swagger и информации о проекте
+#настройки документации swagger и openapi для удобного тестирования api
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Flower Shop API',
     'DESCRIPTION': 'REST API для интернет-магазина цветов (Курсовой проект)',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # Включаем авторизацию по Bearer JWT в Swagger UI
     'SECURITY': [{'BearerAuth': []}],
     'SECURITY_DEFINITIONS': {
         'BearerAuth': {
@@ -173,32 +156,24 @@ SPECTACULAR_SETTINGS = {
             'description': 'Введите JWT токен в формате: Bearer <ваш_токен>'
         }
     },
-    # Настройки UI
     'SWAGGER_UI_SETTINGS': {
         'deepLinking': True,
-        'persistAuthorization': True,  # Сохраняет токен при перезагрузке страницы Swagger
+        'persistAuthorization': True,
         'displayOperationId': True,
     },
 }
 
 from datetime import timedelta
 
+#настройки времени жизни access и refresh токенов
 SIMPLE_JWT = {
-    # Срок жизни токена доступа (короткий для безопасности)
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    
-    # Срок жизни токена обновления (длинный для удобства)
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
-    
-    # Автоматически выдавать новый Refresh-токен при каждом обновлении Access-токена
     'ROTATE_REFRESH_TOKENS': True,
-    
-    # Вносить старый Refresh-токен в чёрный список после обновления
     'BLACKLIST_AFTER_ROTATION': True,
-    
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# Настройки для загружаемых медиа-файлов (изображения товаров и т.д.)
+#настройки папки для хранения изображений товаров и медиафайлов
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

@@ -1,3 +1,4 @@
+#подключаем rest framework, ответы сервера и кастомные action-методы для корзины
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -5,22 +6,23 @@ from .models import Cart, CartItem
 from .serializers import CartSerializer, CartItemSerializer
 
 
+#viewset для работы с корзиной только авторизованного пользователя
 class CartViewSet(viewsets.ViewSet):
-    permission_classes = [permissions.IsAuthenticated]  # Доступно зарегистрированным
+    permission_classes = [permissions.IsAuthenticated]
 
     def _get_or_create_cart(self, user):
         cart, _ = Cart.objects.get_or_create(user=user)
         return cart
 
     def list(self, request):
-        """GET /api/v1/cart/ — просмотр своей корзины"""
+        #получаем корзину текущего пользователя и возвращаем её структуру
         cart = self._get_or_create_cart(request.user)
         serializer = CartSerializer(cart)
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'], url_path='items')
     def add_item(self, request):
-        """POST /api/v1/cart/items/ — добавить товар в корзину"""
+        #добавляем товар в корзину, создавая новую позицию или увеличивая количество
         cart = self._get_or_create_cart(request.user)
         product_id = request.data.get('product_id')
         quantity = int(request.data.get('quantity', 1))
@@ -38,10 +40,7 @@ class CartViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['patch', 'delete'], url_path='items/(?P<item_id>[^/.]+)')
     def item_detail(self, request, item_id=None):
-        """
-        PATCH /api/v1/cart/items/{id}/ — изменить количество
-        DELETE /api/v1/cart/items/{id}/ — удалить позицию
-        """
+        #изменяем количество товара или удаляем позицию из корзины
         cart = self._get_or_create_cart(request.user)
         try:
             item = CartItem.objects.get(id=item_id, cart=cart)

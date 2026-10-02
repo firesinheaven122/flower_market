@@ -1,9 +1,11 @@
+#подключаем сериализаторы и пользовательскую модель для регистрации и профиля
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 
+#сериализатор для создания нового пользователя и сохранения пароля в безопасном виде
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
 
@@ -12,9 +14,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'password', 'first_name', 'last_name', 'phone')
 
     def create(self, validated_data):
-        # Пользователь по умолчанию создается с ролью CLIENT
+        #пользователь создаётся с ролью клиента по умолчанию
         user = User.objects.create_user(
-            username=validated_data['email'],  # Используем email как username
+            username=validated_data['email'],
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
@@ -24,6 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+#сериализатор для чтения и редактирования профиля пользователя
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
