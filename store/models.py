@@ -1,3 +1,5 @@
+from decimal import Decimal
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -26,7 +28,10 @@ class Product(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название товара")
     description = models.TextField(blank=True, null=True, verbose_name="Описание")
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name="Цена"
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))],
+        verbose_name="Цена",
     )
     stock_quantity = models.PositiveIntegerField(
         default=0, verbose_name="Остаток на складе"

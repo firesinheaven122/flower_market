@@ -122,10 +122,12 @@ STATIC_URL = 'static/'
 
 #настройки отправки email в локальной разработке через консоль
 MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+    "default": {
+        "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
+DEFAULT_FROM_EMAIL = "noreply@flowershop.local"
+DEFAULT_MAILER = "default"
 
 #подключаем кастомную модель пользователя из приложения users
 AUTH_USER_MODEL = 'users.User'
